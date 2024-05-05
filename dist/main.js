@@ -1,5 +1,6 @@
 const body = document.getElementById("body")
 const imgAuthor = document.getElementById("img-author")
+const crypto = document.getElementById("crypto")
 
 //render backround img
 const bgRender = async cb => {
@@ -14,7 +15,55 @@ const bgRender = async cb => {
 
 //callback
 bgRender(bg => {
-  console.log(bg)
   body.style.backgroundImage = `url(${bg.urls.full})`
   imgAuthor.textContent = `By: ${bg.user.name}`
+})
+
+let cryptoArr = []
+
+const cryptoRender = async cb => {
+  try {
+    const resp = await fetch("https://api.coingecko.com/api/v3/coins/bitcoin?localization=true")
+    if (!resp.ok) {
+      throw Error("Something went wrong")
+    }
+    const data = await resp.json()
+
+    const respTwo = await fetch("https://api.coingecko.com/api/v3/coins/ethereum?localization=true")
+    if (!resp.ok) {
+      throw Error("Something went wrong")
+    }
+    const dataTwo = await respTwo.json()
+
+    const respThree = await fetch("https://api.coingecko.com/api/v3/coins/dogecoin?localization=true")
+    if (!resp.ok) {
+      throw Error("Something went wrong")
+    }
+    const Threedata = await respThree.json()
+
+    cryptoArr.push(data)
+    cryptoArr.push(dataTwo)
+    cryptoArr.push(Threedata)
+    cb(cryptoArr)
+  } catch (error) {
+    console.error("Error fetching data:", error)
+  }
+}
+
+cryptoRender(arr => {
+  const postArr = arr
+    .map(item => {
+      console.log(item)
+      return `
+      <div class="crypto-box flex gap-1 items-center">
+      <img src="${item.image.thumb}" alt="">
+        <div class="flex flex-col pl-2">
+          <p>${item.name}</p>
+          <p>1 ${item.symbol}: ${item.market_data.current_price.usd} USD</p>
+        </div>
+      </div>
+    `
+    })
+    .join("")
+  crypto.innerHTML = postArr
 })
