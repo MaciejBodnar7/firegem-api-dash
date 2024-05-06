@@ -1,6 +1,7 @@
 const body = document.getElementById("body")
 const imgAuthor = document.getElementById("img-author")
 const crypto = document.getElementById("crypto")
+const centerDiv = document.getElementById("center-div")
 
 //render backround img
 const bgRender = async cb => {
@@ -53,13 +54,14 @@ const cryptoRender = async cb => {
 cryptoRender(arr => {
   const postArr = arr
     .map(item => {
-      console.log(item)
       return `
       <div class="crypto-box flex gap-1 items-center">
-      <img src="${item.image.thumb}" alt="">
+      <img src="${item.image.small}" alt="">
         <div class="flex flex-col pl-2">
-          <p>${item.name}</p>
-          <p>1 ${item.symbol}: ${item.market_data.current_price.usd} USD</p>
+          <p class="font-bold">${item.name}</p>
+          <p>🎯: $${item.market_data.current_price.usd}</p>
+          <p>👆: $${item.market_data.high_24h.usd}</p>
+          <p>👇: $${item.market_data.low_24h.usd}</p>
         </div>
       </div>
     `
@@ -67,3 +69,14 @@ cryptoRender(arr => {
     .join("")
   crypto.innerHTML = postArr
 })
+
+const centerDivF = () => {
+  const currentdate = new Date()
+
+  centerDiv.innerHTML = `
+  <p>${currentdate.getHours()}:${currentdate.getMinutes()}</p>
+  <p class="text-lg">${currentdate.getDate()}/${currentdate.getMonth() + 1}/${currentdate.getFullYear()}</p>
+  `
+}
+
+centerDivF()
